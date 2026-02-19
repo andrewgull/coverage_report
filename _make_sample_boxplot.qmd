@@ -1,0 +1,6 @@
+### `r genes_no_bb[[i]]`
+
+```{r}
+#| echo: false
+make_sample_plot(bed_annotated, group_by_gene=TRUE, gene=genes_no_bb[[i]])
+```
