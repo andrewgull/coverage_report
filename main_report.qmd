@@ -25,7 +25,7 @@ Sys.setenv(CONFIG = params$input_files)
 #| eval: true
 #| message: false
 #| warning: false
-#| cache: true
+#| cache: false
 #| include: false
 
 # Function to extract path from config CSV
@@ -52,7 +52,7 @@ pixi run bedtools intersect -a "$PROBES" -b "$MANE_EXONS_ONLY" -wao > "$ANNOTATE
 ```{r}
 #| label: setup
 #| echo: false
-#| cache: true
+#| cache: false
 #| include: false
 
 library(here)
@@ -196,7 +196,7 @@ if (num_genes > 0) {
     cat("::: {#plot-tabs .panel-tabset}\n\n")
     
     for (i in chunk) {
-      res <- knitr::knit_child("_make_gene_boxplot.qmd", quiet = TRUE)
+      res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
       cat(res, sep = "\n")
     }
     
@@ -217,6 +217,7 @@ if (num_genes > 0) {
 #| label: fusion genes
 #| results: asis
 #| echo: false
+
 fusion_genes <- c("FGFR3", "CCND3", "CCND1", "MAF", "MAFB")
 fusion_index <- match(fusion_genes, genes_no_bb)
 fusion_index <- fusion_index[!is.na(fusion_index)]
@@ -225,7 +226,7 @@ if (length(fusion_index) == 0) {
   cat("\nNo fusion genes found in dataset.\n")
 } else {
   for(i in fusion_index) {
-    res <- knitr::knit_child("_make_gene_boxplot.qmd", quiet = TRUE)
+    res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
     cat(res, sep = "\n")
   }
 }
@@ -282,7 +283,7 @@ if (length(fusion_index) == 0) {
   cat("\nNo fusion genes found in dataset.\n")
 } else {
   for(i in fusion_index) {
-    res <- knitr::knit_child("_make_gene_boxplot.qmd", quiet = TRUE)
+    res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
     cat(res, sep = "\n")
   }
 }
@@ -388,7 +389,3 @@ plot_ly(
     xaxis = list(title = "")
   )
 ```
-
-  )
-```
-
