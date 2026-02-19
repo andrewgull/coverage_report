@@ -2,5 +2,9 @@
 
 ```{r}
 #| echo: false
-make_gene_plot(genes_no_bb[[i]])
+if (i <= length(genes_no_bb) && !is.null(genes_no_bb[[i]])) {
+  make_gene_plot(genes_no_bb[[i]])
+} else {
+  cat("No data available for index", i)
+}
 ```
