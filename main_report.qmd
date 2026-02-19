@@ -127,7 +127,9 @@ read_bed <- function(filename) {
   
   # extract sample name first
   # replace underscores
-  sample_name <- str_sub(filename, 75, -18)
+  sample_name <- basename(filename) |>
+    str_remove("\\.regions\\.bed\\.gz$")
+
   # read bed file and add the sample name
   bed <- read_tsv(filename, col_names = F, show_col_types = F) |>
     mutate("sample" = sample_name)
@@ -229,10 +231,10 @@ plot_backbone <- function(chromosome, bed = bed_annotated_backbone) {
   # chromosome: chromosome name (character sting: chr1 or ch17)
   # bed: bed object with backbone targets (data frame)
   chr_bed <- bed |>
-    filter(grepl(str_glue("^", chromosome, "_"), X4))
+    filter(grepl(str_glue("^{chromosome}_"), X4))
   
   fig <- plot_ly(
-    data = bed,
+    data = chr_bed,
     y = ~ X5,
     x = ~ sample,
     type = "box",
@@ -431,14 +433,17 @@ if (num_genes > 0) {
 #| label: fusion genes
 #| results: asis
 #| echo: false
-
 fusion_genes <- c("FGFR3", "CCND3", "CCND1", "MAF", "MAFB")
-
 fusion_index <- match(fusion_genes, genes_no_bb)
+fusion_index <- fusion_index[!is.na(fusion_index)]
 
-for(i in fusion_index) {
-  res <- knitr::knit_child("_make_gene_boxplot.qmd", quiet = TRUE)
-  cat(res, sep = "\n")
+if (length(fusion_index) == 0) {
+  cat("\nNo fusion genes found in dataset.\n")
+} else {
+  for(i in fusion_index) {
+    res <- knitr::knit_child("_make_gene_boxplot.qmd", quiet = TRUE)
+    cat(res, sep = "\n")
+  }
 }
 ```
 
@@ -486,13 +491,16 @@ make_sample_plot(bed_annotated, group_by_gene = FALSE)
 #| fig-width: 20
 #| fig-height: 20
 
-fusion_genes <- c("FGFR3", "CCND3", "CCND1", "MAF", "MAFB")
-
 fusion_index <- match(fusion_genes, genes_no_bb)
+fusion_index <- fusion_index[!is.na(fusion_index)]
 
-for(i in fusion_index) {
-  res <- knitr::knit_child("_make_sample_boxplot.qmd", quiet = TRUE)
-  cat(res, sep = "\n")
+if (length(fusion_index) == 0) {
+  cat("\nNo fusion genes found in dataset.\n")
+} else {
+  for(i in fusion_index) {
+    res <- knitr::knit_child("_make_gene_boxplot.qmd", quiet = TRUE)
+    cat(res, sep = "\n")
+  }
 }
 
 ```
@@ -528,7 +536,7 @@ DT::datatable(med_cov_samples, options = list(pageLength = 10, lengthMenu = c(5,
 #| fig-width: 20
 #| fig-height: 20
 
-plot_backbone("chr1")
+plot_backbone("Backbone_Chr1")
 ```
 
 
@@ -543,7 +551,7 @@ plot_backbone("chr1")
 #| fig-width: 20
 #| fig-height: 20
 
-plot_backbone("chr17")
+plot_backbone("Backbone_Chr17")
 ```
 
 :::
@@ -570,7 +578,7 @@ DT::datatable(med_cov_chroms, options = list(pageLength = 10, lengthMenu = c(5, 
 #| warning: false
 
 # read run IDs table
-run_ids_table |>
+run_ids_table <- run_ids_table |>
   mutate(
     run_ID = str_replace(run_ID, "^M", "Twist M"),
     run_ID = str_replace_all(run_ID, " ", "-")
@@ -594,6 +602,9 @@ plot_ly(
     title = "Median depth of coverage per run",
     yaxis = list(title = "depth"),
     xaxis = list(title = "")
+  )
+```
+
   )
 ```
 
