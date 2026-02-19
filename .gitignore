@@ -4,9 +4,19 @@
 
 # cache
 depth_of_coverage_cache/
+main_report_cache/
 
 # R stuff
 .Rproj.user
 plots.Rproj
 .Rhistory
+
+# System files
 .DS_Store
+
+# results
+results/
+*.html
+
+# vscode
+.vscode/
