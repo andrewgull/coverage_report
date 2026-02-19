@@ -7,6 +7,7 @@ version = "0.1.0"
 
 [tasks]
 render = "quarto render main_report.qmd --to html"
+test = "Rscript -e 'testthat::test_dir(\"tests\")'"
 
 [dependencies]
 r-base = ">=4.5.2,<4.6"
@@ -25,3 +26,4 @@ quarto = ">=1.8.27,<2"
 r-rmarkdown = ">=2.30,<3"
 r-knitr = ">=1.51,<2"
 r-jsonlite = ">=2.0.0,<3"
+r-here = ">=1.0.2,<2"
