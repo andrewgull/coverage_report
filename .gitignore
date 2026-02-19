@@ -1,0 +1,12 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# cache
+depth_of_coverage_cache/
+
+# R stuff
+.Rproj.user
+plots.Rproj
+.Rhistory
+.DS_Store
