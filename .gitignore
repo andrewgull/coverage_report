@@ -15,7 +15,7 @@ plots.Rproj
 .DS_Store
 
 # results
-results/
+output/
 *.html
 
 # vscode
