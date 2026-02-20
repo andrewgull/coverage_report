@@ -25,9 +25,22 @@ utils::globalVariables(c(
 #' @examples
 #' annotation2tibble("gene_name \"TP53\"; exon_number 1; transcript_name \"TP53\"; db_xref \"RefSeq:12345\";")
 annotation2tibble <- function(column) {
-  # transform the targets
-  # turn column with annotations (X13) into tibble
-  # column: vector of character strings
+  if (is.null(column)) {
+    stop("'column' must not be NULL.")
+  }
+  if (!is.character(column)) {
+    stop("'column' must be a character vector.")
+  }
+
+  if (length(column) == 0) {
+    return(tibble(
+      "gene_name" = character(),
+      "exon_number" = integer(),
+      "transcript_name" = character(),
+      "refseq" = character()
+    ))
+  }
+
   # extract gene name
   gene_name <- str_extract(column, 'gene_name "([^"]+)";') |>
     str_remove('gene_name "') |>
@@ -64,20 +77,35 @@ annotation2tibble <- function(column) {
 #' @examples
 #' read_bed("sample1.regions.bed.gz")
 read_bed <- function(filename) {
+  if (!is.character(filename) || length(filename) != 1 || nchar(trimws(filename)) == 0) {
+    stop("'filename' must be a single non-empty character string.")
+  }
+
+  if (!file.exists(filename)) {
+    stop("File '", filename, "' does not exist.")
+  }
+
   # extract sample name first
   # replace underscores
   sample_name <- basename(filename) |>
     str_remove("\\.regions\\.bed\\.gz$")
 
   # read bed file and add the sample name
-  bed <- read_tsv(filename, col_names = FALSE, show_col_types = FALSE) |>
-    mutate("sample" = sample_name)
+  bed <- tryCatch(
+    {
+      read_tsv(filename, col_names = FALSE, show_col_types = FALSE)
+    },
+    error = function(e) {
+      stop("Error reading file '", filename, "': ", e$message)
+    }
+  )
 
   if (nrow(bed) == 0) {
-    print(paste0("empty file ", filename))
+    warning("read_bed: file '", filename, "' is empty.")
   }
 
-  bed
+  bed |>
+    mutate("sample" = sample_name)
 }
 
 #' Plot Gene Coverage
@@ -96,7 +124,24 @@ read_bed <- function(filename) {
 #' @examples
 #' plot_gene("TP53")
 make_gene_plot <- function(gene, bed = bed_annotated) {
+  if (!is.character(gene) || length(gene) != 1 || nchar(trimws(gene)) == 0) {
+    stop("'gene' must be a single non-empty character string.")
+  }
+
+  required_cols <- c("gene_name", "X5", "label", "sample")
+  missing_cols <- setdiff(required_cols, colnames(bed))
+  if (length(missing_cols) > 0) {
+    stop(
+      "'bed' is missing required columns: ",
+      paste(missing_cols, collapse = ", ")
+    )
+  }
+
   bed_gene <- bed |> dplyr::filter(.data$gene_name == gene)
+
+  if (nrow(bed_gene) == 0) {
+    warning("make_gene_plot: no data found for gene '", gene, "'.")
+  }
 
   fig <- plot_ly(
     data = bed_gene,
@@ -142,9 +187,45 @@ make_sample_plot <- function(bed,
   # bed: bed file object (data frame/tibble)
   # group_by_gene: group by gene or not (logical)
   # gene: gene to make plot for (character string, only if group_by_gene=TRUE)
+
+  if (!is.logical(group_by_gene)) {
+    stop("'group_by_gene' must be logical.")
+  }
+
+  required_cols <- c("X5", "sample", "label")
+  if (group_by_gene) {
+    required_cols <- c(required_cols, "gene_name")
+    if (!is.character(gene) || nchar(gene) == 0) {
+      stop("When 'group_by_gene' is TRUE, 'gene' must be a non-empty character string.")
+    }
+  }
+
+  missing_cols <- setdiff(required_cols, colnames(bed))
+  if (length(missing_cols) > 0) {
+    stop(
+      "'bed' is missing required columns: ",
+      paste(missing_cols, collapse = ", ")
+    )
+  }
+
+  plot_data <- if (group_by_gene) {
+    dplyr::filter(bed, .data$gene_name == gene)
+  } else {
+    bed
+  }
+
+  if (nrow(plot_data) == 0) {
+    msg <- if (group_by_gene) {
+      paste0("make_sample_plot: no data found for gene '", gene, "'.")
+    } else {
+      "make_sample_plot: input 'bed' is empty."
+    }
+    warning(msg)
+  }
+
   if (!group_by_gene) {
     plot_ly(
-      data = bed,
+      data = plot_data,
       y = ~X5,
       x = ~sample,
       type = "box",
@@ -167,7 +248,7 @@ make_sample_plot <- function(bed,
       )
   } else {
     plot_ly(
-      data = dplyr::filter(bed, .data$gene_name == gene),
+      data = plot_data,
       y = ~X5,
       x = ~sample,
       type = "box",
@@ -209,7 +290,7 @@ make_sample_plot <- function(bed,
 #' plot_backbone("chr1")
 plot_backbone <- function(chromosome, bed = bed_annotated_backbone) {
   if (!is.character(chromosome) || length(chromosome) != 1 ||
-    nchar(trimws(chromosome)) == 0) {
+    nchar(trimws(chromosome)) == 0) { # nolint
     stop("'chromosome' must be a single non-empty character string.")
   }
 
