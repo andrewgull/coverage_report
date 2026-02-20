@@ -10,6 +10,7 @@ main_report_cache/
 .Rproj.user
 plots.Rproj
 .Rhistory
+_snaps/
 
 # System files
 .DS_Store
