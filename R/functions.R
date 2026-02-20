@@ -16,6 +16,28 @@ utils::globalVariables(c(
   "run_ID", "transcript_name"
 ))
 
+#' List BED files
+#'
+#' @param path Character string. The path to the directory containing the BED files.
+#' @param suffix Character string. The suffix of the BED files.
+#' @return A character vector containing the full paths to the BED files.
+#' @export
+#' @examples
+#' list_bed_files("/path/to/bed/files", ".regions.bed.gz")
+list_bed_files <- function(path, suffix) {
+  if (!is.character(path) || length(path) != 1 || is.na(path) || nchar(trimws(path)) == 0) {
+    stop("'path' must be a single non-empty character string.")
+  }
+  if (!is.character(suffix) || length(suffix) != 1 || is.na(suffix) || nchar(trimws(suffix)) == 0) {
+    stop("'suffix' must be a single non-empty character string.")
+  }
+
+  files <- list.files(path, pattern = paste0("\\", suffix, "$"), full.names = TRUE, ignore.case = TRUE)
+  if (length(files) == 0) {
+    stop("No files found with suffix '", suffix, "' in path '", path, "'.")
+  }
+  files
+}
 
 #' Parse annotation column
 #'
