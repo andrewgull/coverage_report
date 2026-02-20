@@ -11,9 +11,9 @@ format:
 editor: source
 params:
   design_version: "v2"
-  input_files: "config/input_files_v2.csv"
+  input_files: "config/input_files.csv"
   gene_chunk_size: 20
-  run_ids: "data/twist_myelom_run_IDs_v2.tsv"
+  run_ids: "data/run_IDs.tsv"
   backbone_prefix: "Backbone_"
   prefix_chr1: "Backbone_Chr1"
   prefix_chr17: "Backbone_Chr17"
