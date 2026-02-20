@@ -11,7 +11,7 @@ editor: source
 params:
   input_files: "config/input_files_v2.csv"
   gene_chunk_size: 20
-  run_ids: "data/twist_myelom_run_IDs.tsv"
+  run_ids: "data/twist_myelom_run_IDs_v2.tsv"
 ---
 
 ```{r}
@@ -363,17 +363,15 @@ DT::datatable(med_cov_chroms, options = list(pageLength = 10, lengthMenu = c(5, 
 #| warning: false
 
 # read run IDs table
+# run_IDs there have diferent style - fix this
 run_ids_table <- run_ids_table |>
   mutate(
     run_ID = str_replace(run_ID, "^M", "Twist M"),
     run_ID = str_replace_all(run_ID, " ", "-")
   )
-
-# unify values in the run_ID column
-
-
-bed_annotated_runID <- left_join(bed_annotated, run_ids_table, by = "sample") |>
-  select(X5, run_ID, sample, transcript_name, refseq)
+bed_annotated_runID <- bed_annotated |>
+  mutate(sample = str_remove(sample, "_[TN]$")) |>
+  join_bed_run_ids(run_ids_table)
 
 plot_ly(
   data = bed_annotated_runID,
