@@ -65,7 +65,6 @@ run_ids_table <- params$run_ids |>
   read_tsv(show_col_types = F)
 
 path_dict <- setNames(input_files$path, input_files$name)
-
 ```
 
 
@@ -133,7 +132,7 @@ targets_annotated_parsed <-
   targets_annotated |>
   select(-X13) |>
   bind_cols(gene_exon) |>
-  #unite("gene_exon", gene_name:exon_number, sep="_", remove=FALSE, na.rm=TRUE) |>
+  # unite("gene_exon", gene_name:exon_number, sep="_", remove=FALSE, na.rm=TRUE) |>
   select(-c(X1, X2, X3))
 
 # this should be empty:
@@ -154,8 +153,10 @@ bed_annotated <- left_join(bed_joined, targets_annotated_parsed, by = "X4") |>
   )
 
 # this one contains targets sitting IN the backbone
-bed_annotated_backbone <- left_join(bed_joined, targets_annotated_parsed, by =
-                                      "X4") |>
+bed_annotated_backbone <- left_join(bed_joined, targets_annotated_parsed,
+  by =
+    "X4"
+) |>
   distinct() |>
   filter(X4 %in% targets_bb) |>
   unite(
@@ -184,22 +185,22 @@ num_genes <- length(genes_no_bb)
 
 if (num_genes > 0) {
   chunks <- split(1:num_genes, ceiling(seq_along(1:num_genes) / chunk_size))
-  
+
   for (chunk in chunks) {
     start_idx <- min(chunk)
     end_idx <- max(chunk)
-    
+
     # Print the range header
     cat(sprintf("\n## %s - %s\n\n", genes_no_bb[start_idx], genes_no_bb[end_idx]))
-    
+
     # Start the tabset div
     cat("::: {#plot-tabs .panel-tabset}\n\n")
-    
+
     for (i in chunk) {
       res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
       cat(res, sep = "\n")
     }
-    
+
     # End the tabset div
     cat("\n:::\n")
   }
@@ -225,7 +226,7 @@ fusion_index <- fusion_index[!is.na(fusion_index)]
 if (length(fusion_index) == 0) {
   cat("\nNo fusion genes found in dataset.\n")
 } else {
-  for(i in fusion_index) {
+  for (i in fusion_index) {
     res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
     cat(res, sep = "\n")
   }
@@ -282,12 +283,11 @@ fusion_index <- fusion_index[!is.na(fusion_index)]
 if (length(fusion_index) == 0) {
   cat("\nNo fusion genes found in dataset.\n")
 } else {
-  for(i in fusion_index) {
+  for (i in fusion_index) {
     res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
     cat(res, sep = "\n")
   }
 }
-
 ```
 
 :::
@@ -368,20 +368,20 @@ run_ids_table <- run_ids_table |>
     run_ID = str_replace(run_ID, "^M", "Twist M"),
     run_ID = str_replace_all(run_ID, " ", "-")
   )
-  
+
 # unify values in the run_ID column
 
 
-bed_annotated_runID <- left_join(bed_annotated, run_ids_table, by="sample") |>
+bed_annotated_runID <- left_join(bed_annotated, run_ids_table, by = "sample") |>
   select(X5, run_ID, sample, transcript_name, refseq)
 
 plot_ly(
   data = bed_annotated_runID,
-  y = ~ X5,
-  x = ~ run_ID,
+  y = ~X5,
+  x = ~run_ID,
   type = "box",
-  line = list(color = 'rgba(0,0,0,0.5)'),
-  text = ~ sample
+  line = list(color = "rgba(0,0,0,0.5)"),
+  text = ~sample
 ) |>
   layout(
     title = "Median depth of coverage per run",
