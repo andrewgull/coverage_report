@@ -6,8 +6,8 @@ platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [tasks]
-render-v2 = "quarto render main_report.qmd --output \"coverage_report_v2_$(date +%Y-%m-%d_%H-%M-%S).html\""
-render-v1 = "quarto render main_report.qmd --output \"coverage_report_v1_$(date +%Y-%m-%d_%H-%M-%S).html\" --execute-params params.yml"
+render-v2 = "quarto render main_report.qmd --output \"coverage_report_v2_$(date +%Y-%m-%d_%H-%M-%S).html\" --execute-params params_v2.yml"
+render-v1 = "quarto render main_report.qmd --output \"coverage_report_v1_$(date +%Y-%m-%d_%H-%M-%S).html\" --execute-params params_v1.yml"
 test = "Rscript -e 'testthat::test_dir(\"tests\")'"
 style = "Rscript -e 'styler::style_dir(\"R\")' -e 'styler::style_file(\"main_report.qmd\")' -e 'styler::style_dir(\"tests\")'"
 lint = "Rscript -e 'if(length(lintr::lint_dir(\"R\")) > 0) stop(\"Linting errors found!\")'"
