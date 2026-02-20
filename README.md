@@ -2,7 +2,14 @@ Code to create coverage report with interactive plots.
 
 ## How to use
 
-Edit [input files](config/input_files.csv) and [run IDs](data/run_IDs.tsv), then run
+Edit 
+
+- [input files](config/input_files.csv),
+- [run IDs](data/run_IDs.tsv),
+
+and add them to the params file (e.g. [params_v2.yml](params_v2.yml) or [params_v1.yml](params_v1.yml)) for the design version you want to use.
+
+Then run:
 
 ```bash
 pixi run render-v2
