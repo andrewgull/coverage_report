@@ -6,8 +6,12 @@ platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [tasks]
-render = "quarto render main_report.qmd --to html"
+render = "quarto render main_report.qmd --output \"coverage_report_$(date +%Y-%m-%d_%H-%M-%S).html\""
 test = "Rscript -e 'testthat::test_dir(\"tests\")'"
+style = "Rscript -e 'styler::style_dir(\"R\")' -e 'styler::style_file(\"main_report.qmd\")' -e 'styler::style_dir(\"tests\")'"
+lint = "Rscript -e 'if(length(lintr::lint_dir(\"R\")) > 0) stop(\"Linting errors found!\")'"
+check = { depends-on = ["style", "lint", "test"] }
+build = { cmd = "quarto render analysis.qmd --output-dir output", depends-on = ["check"] }
 
 [dependencies]
 r-base = ">=4.5.2,<4.6"
@@ -27,3 +31,6 @@ r-rmarkdown = ">=2.30,<3"
 r-knitr = ">=1.51,<2"
 r-jsonlite = ">=2.0.0,<3"
 r-here = ">=1.0.2,<2"
+r-styler = ">=1.11.0,<2"
+r-lintr = ">=3.3.0_1,<4"
+r-testthat = ">=3.3.1,<4"
