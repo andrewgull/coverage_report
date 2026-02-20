@@ -6,7 +6,8 @@ platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [tasks]
-render = "quarto render main_report.qmd --output \"coverage_report_$(date +%Y-%m-%d_%H-%M-%S).html\""
+render-v2 = "quarto render main_report.qmd --output \"coverage_report_$(date +%Y-%m-%d_%H-%M-%S).html\""
+render-v1 = "quarto render main_report.qmd --output \"coverage_report_$(date +%Y-%m-%d_%H-%M-%S).html\" -P input_files:config/input_files_v1.csv -P run_ids:data/twist_myelom_run_IDs_v1.tsv"
 test = "Rscript -e 'testthat::test_dir(\"tests\")'"
 style = "Rscript -e 'styler::style_dir(\"R\")' -e 'styler::style_file(\"main_report.qmd\")' -e 'styler::style_dir(\"tests\")'"
 lint = "Rscript -e 'if(length(lintr::lint_dir(\"R\")) > 0) stop(\"Linting errors found!\")'"
