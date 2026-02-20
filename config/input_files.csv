@@ -1,0 +1,6 @@
+name,path
+mane_gtf,path/to/MANE.GRCh38.v1.4.ensembl_genomic.gtf
+mane_exons,path/to/MANE.GRCh38.v1.4.ensembl_genomic.exons.gtf
+probes,path/to/target_bases_covered_by_probes.bed
+probes_annotated,path/to/annotated_targets.bed
+mosdepth_dir,path/to/mosdepth
