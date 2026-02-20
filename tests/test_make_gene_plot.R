@@ -37,6 +37,8 @@ test_that("make_gene_plot throws error for invalid gene", {
   expect_error(make_gene_plot(123, bed), "'gene' must be a single non-empty character string.")
   expect_error(make_gene_plot("", bed), "'gene' must be a single non-empty character string.")
   expect_error(make_gene_plot(c("G1", "G2"), bed), "'gene' must be a single non-empty character string.")
+  expect_error(make_gene_plot(NULL, bed), "'gene' must be a single non-empty character string.")
+  expect_error(make_gene_plot(NA, bed), "'gene' must be a single non-empty character string.")
 })
 
 # ---------------------------------------------------------------------------
@@ -46,6 +48,9 @@ test_that("make_gene_plot throws error for invalid gene", {
 test_that("make_gene_plot throws error for missing columns", {
   bed <- make_test_bed() |> select(-X5)
   expect_error(make_gene_plot("G1", bed), "'bed' is missing required columns: X5")
+
+  bed_no_gene <- make_test_bed() |> select(-gene_name)
+  expect_error(make_gene_plot("G1", bed_no_gene), "missing required columns")
 })
 
 # ---------------------------------------------------------------------------

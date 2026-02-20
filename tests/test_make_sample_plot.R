@@ -51,6 +51,8 @@ test_that("make_sample_plot throws error for invalid gene when group_by_gene is 
   bed <- make_test_bed()
   expect_error(make_sample_plot(bed, group_by_gene = TRUE, gene = ""), "When 'group_by_gene' is TRUE, 'gene' must be a non-empty character string.")
   expect_error(make_sample_plot(bed, group_by_gene = TRUE, gene = 123), "When 'group_by_gene' is TRUE, 'gene' must be a non-empty character string.")
+  expect_error(make_sample_plot(bed, group_by_gene = TRUE, gene = NULL), "When 'group_by_gene' is TRUE, 'gene' must be a non-empty character string.")
+  expect_error(make_sample_plot(bed, group_by_gene = TRUE, gene = NA), "When 'group_by_gene' is TRUE, 'gene' must be a non-empty character string.")
 })
 
 # ---------------------------------------------------------------------------
