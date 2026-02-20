@@ -77,7 +77,7 @@ annotation2tibble <- function(column) {
 #' @examples
 #' read_bed("sample1.regions.bed.gz")
 read_bed <- function(filename) {
-  if (!is.character(filename) || length(filename) != 1 || nchar(trimws(filename)) == 0) {
+  if (!is.character(filename) || length(filename) != 1 || is.na(filename) || nchar(trimws(filename)) == 0) {
     stop("'filename' must be a single non-empty character string.")
   }
 
@@ -195,7 +195,7 @@ make_sample_plot <- function(bed,
   required_cols <- c("X5", "sample", "label")
   if (group_by_gene) {
     required_cols <- c(required_cols, "gene_name")
-    if (!is.character(gene) || nchar(gene) == 0) {
+    if (!is.character(gene) || length(gene) != 1 || is.na(gene) || nchar(trimws(gene)) == 0) {
       stop("When 'group_by_gene' is TRUE, 'gene' must be a non-empty character string.")
     }
   }
