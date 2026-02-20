@@ -80,13 +80,7 @@ library(readr)
 dir_with_depth <- path_dict["mosdepth_dir"]
 annotated_targets_bed <- path_dict["probes_annotated"]
 
-files_found_full_paths <- list.files(
-  path = dir_with_depth,
-  pattern = paste0("\\", ".regions.bed.gz", "$"),
-  full.names = TRUE,
-  ignore.case = TRUE
-)
-
+files_found_full_paths <- list_bed_files(dir_with_depth, ".regions.bed.gz")
 
 bed_joined <- map_dfr(files_found_full_paths, ~ read_bed(.))
 
