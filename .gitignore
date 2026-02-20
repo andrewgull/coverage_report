@@ -17,6 +17,13 @@ plots.Rproj
 # results
 output/
 *.html
+*.rmarkdown
 
 # vscode
 .vscode/
+
+# project-specific files
+config/input_files_v1.csv
+config/input_files_v2.csv
+data/twist_myelom_run_IDs_v1.tsv
+data/twist_myelom_run_IDs_v2.tsv
