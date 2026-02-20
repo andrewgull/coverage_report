@@ -1,5 +1,6 @@
 ---
 title: "Depth of coverage"
+subtitle: "design `r params$design_version`"
 author: "A.G."
 format: 
  html:
@@ -9,9 +10,13 @@ format:
    toc-location: left
 editor: source
 params:
+  design_version: "v2"
   input_files: "config/input_files_v2.csv"
   gene_chunk_size: 20
   run_ids: "data/twist_myelom_run_IDs_v2.tsv"
+  backbone_prefix: "Backbone_"
+  prefix_chr1: "Backbone_Chr1"
+  prefix_chr17: "Backbone_Chr17"
 ---
 
 ```{r}
@@ -88,7 +93,7 @@ bed_joined <- map_dfr(files_found_full_paths, ~ read_bed(.))
 targets <- unique(bed_joined$X4)
 
 # targets without the backbone regions
-targets_no_bb <- targets[!(grepl("^Backbone_", targets))]
+targets_no_bb <- targets[!(grepl(paste0("^", params$backbone_prefix), targets))]
 
 targets_bb <- setdiff(targets, targets_no_bb)
 
@@ -315,7 +320,8 @@ DT::datatable(med_cov_samples, options = list(pageLength = 10, lengthMenu = c(5,
 #| fig-width: 20
 #| fig-height: 20
 
-plot_backbone("Backbone_Chr1")
+# plot_backbone(paste0(params$backbone_prefix, "Chr1"))
+plot_backbone(params$prefix_chr1)
 ```
 
 
@@ -330,7 +336,7 @@ plot_backbone("Backbone_Chr1")
 #| fig-width: 20
 #| fig-height: 20
 
-plot_backbone("Backbone_Chr17")
+plot_backbone(params$prefix_chr17)
 ```
 
 :::
