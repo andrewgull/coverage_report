@@ -133,3 +133,25 @@ test_that("warns (not errors) when result has 0 rows after join", {
   # Normal join → 1 row, no warning
   expect_no_warning(join_bed_run_ids(shared_bed, result_run))
 })
+
+# ---------------------------------------------------------------------------
+# 7. Warning when run_ids has samples not in bed
+# ---------------------------------------------------------------------------
+
+test_that("warns when some sample names from run_ids are missing in bed", {
+  bed <- make_bed(c("S1", "S2"))
+  run_ids <- make_run_ids(c("S1", "S2", "S3", "S4"), c("R1", "R2", "R3", "R4"))
+
+  # Should warn about S3 and S4
+  expect_warning(
+    join_bed_run_ids(bed, run_ids),
+    regexp = "The following sample names from 'run_ids' are not present in 'bed' and will be omitted: S3, S4"
+  )
+
+  # Result should still have the matched rows
+  suppressWarnings({
+    result <- join_bed_run_ids(bed, run_ids)
+  })
+  expect_equal(nrow(result), 2L)
+  expect_setequal(result$sample, c("S1", "S2"))
+})
