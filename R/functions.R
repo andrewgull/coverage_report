@@ -455,6 +455,15 @@ join_bed_run_ids <- function(bed, run_ids) {
     )
   }
 
+  missing_from_bed <- setdiff(unique(run_ids$sample), unique(bed$sample))
+  if (length(missing_from_bed) > 0) {
+    warning(
+      "The following sample names from 'run_ids' are not present in 'bed' and will be omitted: ",
+      paste(head(missing_from_bed, 10), collapse = ", "),
+      if (length(missing_from_bed) > 10) "..." else ""
+    )
+  }
+
   result <- bed |>
     left_join(run_ids, by = "sample") |>
     select(X5, run_ID, sample, transcript_name, refseq)
