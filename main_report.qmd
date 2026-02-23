@@ -247,7 +247,23 @@ if (length(fusion_index) == 0) {
 med_cov_gene <- make_cov_table(bed_annotated, by_gene = TRUE) |>
   dplyr::rename("gene" = gene_name, "gene:exon:refseq" = label)
 
-DT::datatable(med_cov_gene, options = list(pageLength = 10, lengthMenu = c(5, 10, 15, 20)))
+DT::datatable(
+  med_cov_gene,
+  extensions = "Buttons",
+  options = list(
+    dom = "Bfrtip",
+    buttons = list(
+      list(
+        extend = "csv",
+        text = "TSV",
+        fieldSeparator = "\t",
+        extension = ".tsv"
+      )
+    ),
+    pageLength = 10,
+    lengthMenu = c(5, 10, 15, 20)
+  )
+)
 ```
 
 
@@ -301,7 +317,23 @@ if (length(fusion_index) == 0) {
 
 med_cov_samples <- make_cov_table(bed_annotated)
 
-DT::datatable(med_cov_samples, options = list(pageLength = 10, lengthMenu = c(5, 10, 15, 20)))
+DT::datatable(
+  med_cov_samples,
+  extensions = "Buttons",
+  options = list(
+    dom = "Bfrtip",
+    buttons = list(
+      list(
+        extend = "csv",
+        text = "TSV",
+        fieldSeparator = "\t",
+        extension = ".tsv"
+      )
+    ),
+    pageLength = 10,
+    lengthMenu = c(5, 10, 15, 20)
+  )
+)
 ```
 
 
@@ -351,7 +383,23 @@ plot_backbone(params$prefix_chr17)
 
 med_cov_chroms <- make_cov_table(bed_annotated_backbone)
 
-DT::datatable(med_cov_chroms, options = list(pageLength = 10, lengthMenu = c(5, 10, 15, 20)))
+DT::datatable(
+  med_cov_chroms,
+  extensions = "Buttons",
+  options = list(
+    dom = "Bfrtip",
+    buttons = list(
+      list(
+        extend = "csv",
+        text = "TSV",
+        fieldSeparator = "\t",
+        extension = ".tsv"
+      )
+    ),
+    pageLength = 10,
+    lengthMenu = c(5, 10, 15, 20)
+  )
+)
 ```
 
 # Grouped by sequencing runs
