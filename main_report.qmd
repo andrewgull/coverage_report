@@ -283,7 +283,7 @@ if (length(fusion_index) == 0) {
   cat("\nNo fusion genes found in dataset.\n")
 } else {
   for (i in fusion_index) {
-    res <- knitr::knit_child("includes/_make_gene_boxplot.qmd", quiet = TRUE)
+    res <- knitr::knit_child("includes/_make_sample_boxplot.qmd", quiet = TRUE)
     cat(res, sep = "\n")
   }
 }
@@ -369,6 +369,7 @@ run_ids_table <- run_ids_table |>
     run_ID = str_replace(run_ID, "^M", "Twist M"),
     run_ID = str_replace_all(run_ID, " ", "-")
   )
+
 bed_annotated_runID <- bed_annotated |>
   mutate(sample = str_remove(sample, "_[TN]$")) |>
   join_bed_run_ids(run_ids_table)
