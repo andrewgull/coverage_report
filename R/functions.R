@@ -13,7 +13,7 @@ library(rlang)
 utils::globalVariables(c(
   "gene_name", "sample",
   "label", "X4", "X5", "exon_number", "refseq",
-  "run_ID", "transcript_name"
+  "run_ID", "transcript_name", "design"
 ))
 
 #' List BED files
@@ -476,4 +476,60 @@ join_bed_run_ids <- function(bed, run_ids) {
   }
 
   result
+}
+
+#' Plot Chromosome Coverage Comparison
+#'
+#' Generates an interactive Plotly boxplot comparing depth of coverage
+#' between two experiment designs for a given chromosome.
+#'
+#' @param chromosome Character string. The chromosome name to filter for (e.g., "chr1").
+#' @param bed Data frame. Combined BED data for both designs, with a 'design' column.
+#'
+#' @return A plotly object representing the boxplot.
+#'
+#' @export
+#'
+#' @examples
+#' make_chr_comparison_plot("chr1", bed)
+make_chr_comparison_plot <- function(chromosome, bed) {
+  if (!is.character(chromosome) || length(chromosome) != 1 ||
+      is.na(chromosome) || nchar(trimws(chromosome)) == 0) {
+    stop("'chromosome' must be a single non-empty character string.")
+  }
+
+  required_cols <- c("X1", "X5", "design")
+  missing_cols <- setdiff(required_cols, colnames(bed))
+  if (length(missing_cols) > 0) {
+    stop(
+      "'bed' is missing required columns: ",
+      paste(missing_cols, collapse = ", ")
+    )
+  }
+
+  chr_bed <- bed |> filter(.data$X1 == chromosome)
+
+  if (nrow(chr_bed) == 0) {
+    warning("make_chr_comparison_plot: no data found for chromosome '", chromosome, "'.")
+  }
+
+  plot_ly(
+    data = chr_bed,
+    x = ~design,
+    y = ~X5,
+    color = ~design,
+    type = "box",
+    boxpoints = "all",
+    jitter = 0.3,
+    pointpos = 0,
+    marker = list(size = 4, opacity = 0.6),
+    line = list(color = "rgba(0,0,0,0.5)"),
+    fillcolor = "transparent",
+    text = ~sample
+  ) |>
+    layout(
+      title = paste0(chromosome, " depth of coverage"),
+      yaxis = list(title = "depth"),
+      xaxis = list(title = "design")
+    )
 }
