@@ -79,4 +79,8 @@ test_that("errors when bed is missing required columns", {
     make_chr_comparison_plot("chr1", make_test_bed() |> select(-X1)),
     regexp = "'bed' is missing required columns:.*X1"
   )
+  expect_error(
+    make_chr_comparison_plot("chr1", make_test_bed() |> select(-sample)),
+    regexp = "'bed' is missing required columns:.*sample"
+  )
 })

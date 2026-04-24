@@ -498,7 +498,7 @@ make_chr_comparison_plot <- function(chromosome, bed) {
     stop("'chromosome' must be a single non-empty character string.")
   }
 
-  required_cols <- c("X1", "X5", "design")
+  required_cols <- c("X1", "X5", "design", "sample")
   missing_cols <- setdiff(required_cols, colnames(bed))
   if (length(missing_cols) > 0) {
     stop(
