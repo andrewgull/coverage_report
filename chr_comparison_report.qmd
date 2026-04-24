@@ -32,7 +32,8 @@ source(here("R", "functions.R"))
 
 read_design <- function(dir, label) {
   list_bed_files(dir, ".regions.bed.gz") |>
-    map_dfr(read_bed) |>
+    map(read_bed) |>
+    list_rbind() |>
     mutate(design = label)
 }
 
@@ -47,6 +48,8 @@ chromosomes <- sort(unique(bed$X1))
 ```{r}
 #| label: plots
 #| echo: false
+#| message: false
+#| warning: false
 #| results: "asis"
 
 for (chr in chromosomes) {
