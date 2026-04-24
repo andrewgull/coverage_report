@@ -27,7 +27,6 @@ library(dplyr)
 library(plotly)
 library(purrr)
 library(readr)
-library(htmltools)
 
 source(here("R", "functions.R"))
 
@@ -49,13 +48,13 @@ chromosomes <- sort(unique(bed$X1))
 ```{r}
 #| label: plots
 #| echo: false
-#| message: false
-#| warning: false
 #| results: "asis"
 
 for (chr in chromosomes) {
-  cat(paste0("\n## ", chr, "\n\n"))
-  print(tagList(make_chr_comparison_plot(chr, bed)))
-  cat("\n\n")
+  cat(knitr::knit_child(
+    here("includes", "_make_chr_comparison_plot.qmd"),
+    envir = environment(),
+    quiet = TRUE
+  ))
 }
 ```

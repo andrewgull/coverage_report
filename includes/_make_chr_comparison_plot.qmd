@@ -1,0 +1,6 @@
+## `r chr`
+
+```{r}
+#| echo: false
+make_chr_comparison_plot(chr, bed)
+```
