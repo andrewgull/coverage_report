@@ -1,0 +1,57 @@
+---
+title: "Chromosome Coverage Comparison"
+subtitle: "Design v1 vs v2"
+author: "A.G."
+format:
+  html:
+    self-contained: true
+    theme: "cosmo"
+    toc: true
+    toc-location: left
+editor: source
+params:
+  bed_dir_v1: "/path/to/v1"
+  bed_dir_v2: "/path/to/v2"
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+#| cache: false
+#| include: false
+
+library(here)
+library(dplyr)
+library(purrr)
+library(readr)
+library(htmltools)
+
+source(here("R", "functions.R"))
+
+read_design <- function(dir, label) {
+  list_bed_files(dir, ".regions.bed.gz") |>
+    map_dfr(read_bed) |>
+    mutate(design = label)
+}
+
+bed <- bind_rows(
+  read_design(params$bed_dir_v1, "v1"),
+  read_design(params$bed_dir_v2, "v2")
+)
+
+chromosomes <- sort(unique(bed$X1))
+```
+
+```{r}
+#| label: plots
+#| echo: false
+#| results: "asis"
+
+for (chr in chromosomes) {
+  cat(paste0("\n## ", chr, "\n\n"))
+  print(tagList(make_chr_comparison_plot(chr, bed)))
+  cat("\n\n")
+}
+```
