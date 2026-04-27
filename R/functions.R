@@ -513,23 +513,47 @@ make_chr_comparison_plot <- function(chromosome, bed) {
     warning("make_chr_comparison_plot: no data found for chromosome '", chromosome, "'.")
   }
 
+  n_traces <- length(unique(chr_bed$design))
+
   plot_ly(
     data = chr_bed,
     x = ~design,
     y = ~X5,
     color = ~design,
     type = "box",
-    boxpoints = "all",
-    jitter = 0.3,
-    pointpos = 0,
+    boxpoints = FALSE,
     marker = list(size = 4, opacity = 0.6),
     line = list(color = "rgba(0,0,0,0.5)"),
-    fillcolor = "transparent",
     text = ~sample
   ) |>
+    style(fillcolor = "transparent") |>
     layout(
       title = paste0(chromosome, " depth of coverage"),
       yaxis = list(title = "depth"),
-      xaxis = list(title = "design")
+      xaxis = list(title = "design"),
+      showlegend = FALSE,
+      updatemenus = list(
+        list(
+          type = "buttons",
+          x = 0, xanchor = "left",
+          y = 1.12, yanchor = "top",
+          showactive = TRUE,
+          active = -1L,
+          buttons = list(
+            list(
+              label = "Show dots",
+              method = "restyle",
+              args = list(
+                list(boxpoints = "all", jitter = 0.3, pointpos = 0),
+                as.list(seq_len(n_traces) - 1L)
+              ),
+              args2 = list(
+                list(boxpoints = FALSE, jitter = 0, pointpos = 0),
+                as.list(seq_len(n_traces) - 1L)
+              )
+            )
+          )
+        )
+      )
     )
 }

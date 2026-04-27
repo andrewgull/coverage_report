@@ -42,7 +42,12 @@ bed <- bind_rows(
   read_design(params$bed_dir_v2, "v2")
 )
 
-chromosomes <- sort(unique(bed$X1))
+chrs_all <- unique(bed$X1)
+chromosomes <- chrs_all[order(
+  suppressWarnings(as.integer(sub("^chr", "", chrs_all))),
+  chrs_all,
+  na.last = TRUE
+)]
 ```
 
 ```{r}
@@ -50,6 +55,7 @@ chromosomes <- sort(unique(bed$X1))
 #| echo: false
 #| results: "asis"
 
+cat("::: {.panel-tabset}\n\n")
 for (chr in chromosomes) {
   cat(knitr::knit_child(
     here("includes", "_make_chr_comparison_plot.qmd"),
@@ -57,4 +63,5 @@ for (chr in chromosomes) {
     quiet = TRUE
   ))
 }
+cat(":::\n")
 ```
