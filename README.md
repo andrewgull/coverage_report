@@ -9,16 +9,19 @@ Edit
 
 and add them to the params file (e.g. [params_v2.yml](params_v2.yml) or [params_v1.yml](params_v1.yml)) for the design version you want to use.
 
+File `params_comparison.yml` takes paths to coverage bed files (both designs) as input.
+
 Then run:
 
 ```bash
+# design 2
 pixi run render-v2
-```
 
-or
-
-```bash
+# design 1
 pixi run render-v1
+
+# per chromosome coverage comparison
+pixi run render-comparison
 ```
 
 ### Note on parameters:
